@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+require 'csv'
+file = ARGV.shift
+col_sizes = []
+CSV.foreach(file) do |row|
+  row.each_with_index do |col, index|
+    size = col.nil? ? 0 : col.chars.map{|c| c.bytesize == 1 ? 1 : 2}.sum
+    col_sizes[index] = size if col_sizes[index].nil? || col_sizes[index] < size
+  end
+end
+CSV.foreach(file){ |row| puts row.map.with_index{|col,index| (col || "").ljust(col_sizes[index]) }.join(" ") }
